@@ -1,0 +1,290 @@
+# swagger config
+openapi: 3.0.0
+info:
+  title: "RP Flask REST API"
+  description: "An API about people and notes"
+  version: "1.0.0"
+
+# different servers (separate tasks/categories, etc...)
+servers:
+  - url: "/api"
+
+# Schemas
+
+#- User schema
+components:
+  schemas:
+    User:
+      type: "object"
+      #The dash (-) in front of - lname indicates that required can contain a list of properties
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: "string"
+        email:
+          type: "string"
+        name:
+          type: "string"
+        phone:
+          type: integer 
+        oauth_key:
+          type: integer
+        is_driver:
+          type: integer
+        id_car:
+          type: integer
+    Route:
+      type: "object"
+      required:
+       - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: "string"
+        status:
+          type: "string"
+        cost_seat:
+          type: integer
+        seats:
+          type: integer 
+        pickup:
+          type: "string"
+        passengers:
+          type: "string"
+        date:
+          type: "string"
+    Car:
+     type: "object"
+     required:
+       - id
+     properties:
+       id:
+         type: integer
+       model:
+         type: "string"
+       year:
+         type: integer
+
+      
+
+
+  parameters:
+    id:
+      name: "id"
+      description: "id of the person to get"
+      in: path
+      required: true
+      schema:
+        type: integer
+
+# END POINTS USER
+
+paths:
+  /user:
+    get:
+      operationId: "db.users_helper.read_all"
+      tags:
+        - User
+      summary: "Read the list of people"
+      responses:
+        "200":
+          description: "Successfully read people list"
+    post:
+      operationId: "db.users_helper.create"
+      tags:
+        - User
+      summary: "Create a person"
+      requestBody:
+        description: "Person to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: "Successfully created person"
+  /user/{id}:
+    get:
+      operationId: "db.users_helper.read_one"
+      tags:
+        - User
+      summary: "Read one person"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully read person"
+    put:
+      tags:
+        - User
+      operationId: "db.users_helper.update"
+      summary: "Update a person"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully updated person"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/User"
+    delete:
+      tags:
+        - User
+      operationId: "db.users_helper.delete"
+      summary: "Delete a person"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Successfully deleted person"
+
+
+
+  #----------------------------------------
+
+
+  # ROUTE ENDPOINTS
+
+  /route:
+    get:
+      operationId: "db.route_helper.read_all"
+      tags:
+        - Route
+      summary: "Read the list of ROUTESe"
+      responses:
+        "200":
+          description: "Successfully read ROUTES list"
+          #Create a New Person
+    post:
+      operationId: "db.route_helper.create"
+      tags:
+        - Route
+      summary: "Create a ROUTE"
+      requestBody:
+        description: "ROUTE to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "route"
+              $ref: "#/components/schemas/Route"
+      responses:
+        "201":
+          description: "Successfully created ROUTE"
+  /route/{id}:
+    get:
+      operationId: "db.route_helper.read_one"
+      tags:
+        - Route
+      summary: "Read one Route"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully read ROUTE"
+    put:
+      tags:
+        - Route
+      operationId: "db.route_helper.update"
+      summary: "Update a Route"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully updated Routes"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: "route"
+              $ref: "#/components/schemas/Route"
+    delete:
+      tags:
+        - Route
+      operationId: "db.route_helper.delete"
+      summary: "Delete a Route"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Successfully deleted Route"
+
+# ----------------------------------------
+
+#END POINTS CAR
+
+# paths:
+  /car:
+    get:
+      operationId: "db.car_helper.read_all"
+      tags:
+        - Car
+      summary: "Read the list of people"
+      responses:
+        "200":
+          description: "Successfully read people list"
+          #Create a New Person
+    post:
+      operationId: "db.car_helper.create"
+      tags:
+        - Car
+      summary: "Create a CAR"
+      requestBody:
+        description: "Person to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "car"
+              $ref: "#/components/schemas/Car"
+      responses:
+        "201":
+          description: "Successfully created person"
+  /car/{id}:
+    get:
+     operationId: "db.car_helper.read_one"
+     tags:
+       - Car
+     summary: "Read one CAR"
+     parameters:
+       - $ref: "#/components/parameters/id"
+     responses:
+       "200":
+         description: "Successfully read CAR"
+    put:
+      tags:
+        - Car
+      operationId: "db.car_helper.update"
+      summary: "Update a person"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: "Successfully updated person"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: "car"
+              $ref: "#/components/schemas/Car"
+    delete:
+      tags:
+        - Car
+      operationId: "db.car_helper.delete"
+      summary: "Delete a person"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "204":
+          description: "Successfully deleted person"
+
+

@@ -1,0 +1,21 @@
+<!-- se crea otro archivo con el nombre de  home.html dentro de templates -->
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> RAYD DB </title>
+</head>
+<body>
+    <h1>
+        Hola, People!
+    </h1>
+    <u1>
+        {% for person in people %}
+        <li>{{ person.fname }} {{ person.lname}}</li>
+        {% endfor %}
+    </u1>
+</body>
+</html>
