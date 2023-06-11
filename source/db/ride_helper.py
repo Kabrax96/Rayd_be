@@ -5,9 +5,23 @@ import sys
 sys.path.append('../')
 
 # Ride helper functions
+
+
 def read_all_rides():
     rides = Ride.query.all()
     return ride_schema.dump(rides)
+
+
+def read_one(id):
+    car = Ride.query.filter(Ride.id == id).first()
+
+    if car is not None:
+        return ride_schema.dump(car)
+    else:
+        abort(
+            404, f"id {id} not found"
+        )
+
 
 def create_ride(ride):
     id = ride.get("id")
@@ -23,6 +37,7 @@ def create_ride(ride):
             406,
             f"Ride with id {id} already exists",
         )
+
 
 def update_ride(id, ride):
     update_ride = Ride.query.filter(Ride.id == id).one_or_none()
@@ -44,6 +59,7 @@ def update_ride(id, ride):
             404,
             f"Ride not found for Id: {id}",
         )
+
 
 def delete_ride(id):
     ride = Ride.query.filter(Ride.id == id).one_or_none()

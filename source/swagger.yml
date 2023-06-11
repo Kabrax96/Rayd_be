@@ -230,13 +230,13 @@ paths:
   /rides:
     get:
       summary: Retrieve all rides
-      operationId: getRides
+      operationId: "ride_helper.read_all_riders"
       responses:
         "200":
           description: OK
     post:
       summary: Create a new ride
-      operationId: createRide
+      operationId: "ride_helpers.create_ride"
       requestBody:
         required: true
         content:
@@ -249,7 +249,7 @@ paths:
   /rides/{ride_id}:
     get:
       summary: Retrieve a specific ride
-      operationId: getRide
+      operationId: "ride_helper.read_one"
       parameters:
         - name: ride_id
           in: path
@@ -264,7 +264,7 @@ paths:
           description: Ride not found
     put:
       summary: Update a specific ride
-      operationId: updateRide
+      operationId: "ride_helpes.update_ride"
       parameters:
         - name: ride_id
           in: path
@@ -285,7 +285,7 @@ paths:
           description: Ride not found
     delete:
       summary: Delete a specific ride
-      operationId: deleteRide
+      operationId: "ride_helper.delete_ride"
       parameters:
         - name: ride_id
           in: path
