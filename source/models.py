@@ -1,32 +1,103 @@
-from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 from config import db, ma
-from sqlalchemy import ForeignKey
-
-
-# Print de prueba
-print('models.py')
-
-# Classes
-# table_user
 
 
 class User(db.Model):
-    __tablename__ = "table_users"
-    id = db.Column(db.Integer,
-                   primary_key=True)
-    name = db.Column(db.String(32))
-    email = db.Column(db.String(32))
-    phone = db.Column(db.Integer)
-    oauth_key = db.Column(db.Integer)
-    is_driver = db.Column(db.Integer)
-    # Falta de agregrar ForeignKey('table_car.id')
-    # P1
-    # id_car = db.column(db.Integer, ForeignKey('table_car.id_car'))
+    __tablename__ = 'user_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    is_driver = db.Column(db.Boolean, nullable=False)
+    id_car = db.Column(db.Integer, db.ForeignKey('car_table.id'))
+    email = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+
+    car = db.relationship('Car', backref=db.backref('users'))
+
+    def __init__(self, is_driver, id_car, email, password, phone):
+        self.is_driver = is_driver
+        self.id_car = id_car
+        self.email = email
+        self.password = password
+        self.phone = phone
 
 
-# Schema User
+class Car(db.Model):
+    __tablename__ = 'car_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    brand = db.Column(db.String(50), nullable=False)
+    model = db.Column(db.String(50), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    plate = db.Column(db.String(20), nullable=False)
+
+    def __init__(self, brand, model, year, plate):
+        self.brand = brand
+        self.model = model
+        self.year = year
+        self.plate = plate
 
 
+class Ride(db.Model):
+    __tablename__ = 'ride_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    driver_id = db.Column(db.Integer, db.ForeignKey('user_table.id'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=False)
+    pickup = db.Column(db.String(100), nullable=False)
+    drop_off = db.Column(db.String(100), nullable=False)
+    seats = db.Column(db.Integer, nullable=False)
+    status_id = db.Column(db.Integer, db.ForeignKey('status_table.id'), nullable=False)
+    route_id = db.Column(db.Integer, db.ForeignKey('route_table.id'), nullable=False)
+
+    driver = db.relationship('User', backref=db.backref('rides'))
+    status = db.relationship('Status')
+    route = db.relationship('Route')
+
+    def __init__(self, driver_id, start_time, end_time, pickup, drop_off, seats, status_id, route_id):
+        self.driver_id = driver_id
+        self.start_time = start_time
+        self.end_time = end_time
+        self.pickup = pickup
+        self.drop_off = drop_off
+        self.seats = seats
+        self.status_id = status_id
+        self.route_id = route_id
+
+
+class Status(db.Model):
+    __tablename__ = 'status_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.String(50), nullable=False)
+
+    def __init__(self, status):
+        self.status = status
+
+
+class Route(db.Model):
+    __tablename__ = 'route_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+
+class Passengers(db.Model):
+    __tablename__ = 'passengers_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_table.id'), nullable=False)
+    ride_id = db.Column(db.Integer, db.ForeignKey('ride_table.id'), nullable=False)
+
+    user = db.relationship('User', backref=db.backref('passengers'))
+    ride = db.relationship('Ride', backref=db.backref('passengers'))
+
+
+# Define Marshmallow schemas for serialization and deserialization
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
@@ -35,30 +106,27 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
-user_schema = UserSchema()
-user_schema_many = UserSchema(many=True)
+class CarSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Car
+        load_instance = True
+        sqla_session = db.session
 
 
-# ----------------------------------------------------------------------------------------
-# Classes
-# table_rute
+class RideSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Ride
+        load_instance = True
+        sqla_session = db.session
+        include_fk = True
 
 
-class Route(db.Model):
-    __tablename__ = "table_route"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(32))
-    # No esta definida la variable DateTime
-    date = db.Column(db.String(32))  # P1
-    status = db.Column(db.String(32))
-    cost_seat = db.Column(db.Integer)
-    seats = db.Column(db.Integer)
-    # No puse numero limite para el string
-    pickup = db.Column(db.String(32))
-    passengers = db.Column(db.String(32))
+class StatusSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Status
+        load_instance = True
+        sqla_session = db.session
 
-
-# Schema Route
 
 class RouteSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -67,30 +135,29 @@ class RouteSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
 
 
-route_schema = RouteSchema()
-route_schema_many = RouteSchema(many=True)
-
-
-# ---------------------------------------------------------------------------------------
-# CLASS CAR
-
-
-class Car(db.Model):
-    __tablename__ = "table_car"
-    id = db.Column(db.Integer, primary_key=True)
-    model = db.Column(db.String(32))
-    year = db.Column(db.Integer)
-
-
-# Schema Car
-
-class CarSchema(ma.SQLAlchemyAutoSchema):
+class PassengersSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = Car
+        model = Passengers
         load_instance = True
         sqla_session = db.session
 
 
+# Initialize the Marshmallow schemas
+
+user_schema = UserSchema()
+users_schema = UserSchema(many=True)
+
 car_schema = CarSchema()
-# Falta de agregar el people_schema por = ####
-car_schema_many = CarSchema(many=True)
+cars_schema = CarSchema(many=True)
+
+ride_schema = RideSchema()
+rides_schema = RideSchema(many=True)
+
+status_schema = StatusSchema()
+statuses_schema = StatusSchema(many=True)
+
+route_schema = RouteSchema()
+routes_schema = RouteSchema(many=True)
+
+passenger_schema = PassengersSchema()
+passengers_schema = PassengersSchema(many=True)

@@ -1,290 +1,413 @@
 # swagger config
 openapi: 3.0.0
-info:
-  title: "RP Flask REST API"
-  description: "An API about people and notes"
-  version: "1.0.0"
 
-# different servers (separate tasks/categories, etc...)
+info:
+  title: RAYD API
+  version: 0.1.0
+  description: The Ride Sharing API enables users to manage ride sharing activities, including user registration, car details, ride creation, and passenger management. It provides endpoints to interact with users, cars, rides, and statuses. With this API, users can easily create, update, and delete user profiles, cars, and rides, as well as track ride statuses and manage passengers.
+
 servers:
   - url: "/api"
 
-# Schemas
+# Table Schemas
 
-#- User schema
 components:
   schemas:
     User:
-      type: "object"
-      #The dash (-) in front of - lname indicates that required can contain a list of properties
-      required:
-        - id
+      type: object
       properties:
         id:
-          type: integer
-        name:
-          type: "string"
-        email:
-          type: "string"
-        name:
-          type: "string"
-        phone:
-          type: integer 
-        oauth_key:
           type: integer
         is_driver:
-          type: integer
+          type: boolean
         id_car:
           type: integer
-    Route:
-      type: "object"
-      required:
-       - id
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+    Car:
+      type: object
       properties:
         id:
           type: integer
-        name:
-          type: "string"
-        status:
-          type: "string"
-        cost_seat:
+        brand:
+          type: string
+        model:
+          type: string
+        year:
           type: integer
-        seats:
-          type: integer 
+        plate:
+          type: string
+    Ride:
+      type: object
+      properties:
+        id:
+          type: integer
+        driver_id:
+          type: integer
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
         pickup:
-          type: "string"
-        passengers:
-          type: "string"
-        date:
-          type: "string"
-    Car:
-     type: "object"
-     required:
-       - id
-     properties:
-       id:
-         type: integer
-       model:
-         type: "string"
-       year:
-         type: integer
+          type: string
+        drop_off:
+          type: string
+        seats:
+          type: integer
+        status_id:
+          type: integer
+        route_id:
+          type: integer
+    Passenger:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        ride_id:
+          type: integer
 
-      
-
-
-  parameters:
-    id:
-      name: "id"
-      description: "id of the person to get"
-      in: path
-      required: true
-      schema:
-        type: integer
-
-# END POINTS USER
+# Endpoints
 
 paths:
-  /user:
+
+# ------------------ USERS ----------------------
+
+  /users:
     get:
-      operationId: "db.users_helper.read_all"
-      tags:
-        - User
-      summary: "Read the list of people"
+      summary: Retrieve all users
+      operationId: "db.users_helper.read_all_users"
       responses:
-        "200":
-          description: "Successfully read people list"
+        '200':
+          description: OK
     post:
-      operationId: "db.users_helper.create"
-      tags:
-        - User
-      summary: "Create a person"
+      summary: Create a new user
+      operationId: createUser
       requestBody:
-        description: "Person to create"
         required: true
         content:
           application/json:
             schema:
-              x-body-name: "user"
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
-        "201":
-          description: "Successfully created person"
-  /user/{id}:
+        '201':
+          description: Created
+  /users/{user_id}:
     get:
-      operationId: "db.users_helper.read_one"
-      tags:
-        - User
-      summary: "Read one person"
+      summary: Retrieve a specific user
+      operationId: getUser
       parameters:
-        - $ref: "#/components/parameters/id"
+        - name: user_id
+          in: path
+          description: ID of the user to retrieve
+          required: true
+          schema:
+            type: integer
       responses:
-        "200":
-          description: "Successfully read person"
+        '200':
+          description: OK
+        '404':
+          description: User not found
     put:
-      tags:
-        - User
-      operationId: "db.users_helper.update"
-      summary: "Update a person"
+      summary: Update a specific user
+      operationId: updateUser
       parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "200":
-          description: "Successfully updated person"
+        - name: user_id
+          in: path
+          description: ID of the user to update
+          required: true
+          schema:
+            type: integer
       requestBody:
-        content:
-          application/json:
-            schema:
-              x-body-name: "user"
-              $ref: "#/components/schemas/User"
-    delete:
-      tags:
-        - User
-      operationId: "db.users_helper.delete"
-      summary: "Delete a person"
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "204":
-          description: "Successfully deleted person"
-
-
-
-  #----------------------------------------
-
-
-  # ROUTE ENDPOINTS
-
-  /route:
-    get:
-      operationId: "db.route_helper.read_all"
-      tags:
-        - Route
-      summary: "Read the list of ROUTESe"
-      responses:
-        "200":
-          description: "Successfully read ROUTES list"
-          #Create a New Person
-    post:
-      operationId: "db.route_helper.create"
-      tags:
-        - Route
-      summary: "Create a ROUTE"
-      requestBody:
-        description: "ROUTE to create"
         required: true
         content:
           application/json:
             schema:
-              x-body-name: "route"
-              $ref: "#/components/schemas/Route"
+              $ref: '#/components/schemas/User'
       responses:
-        "201":
-          description: "Successfully created ROUTE"
-  /route/{id}:
-    get:
-      operationId: "db.route_helper.read_one"
-      tags:
-        - Route
-      summary: "Read one Route"
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "200":
-          description: "Successfully read ROUTE"
-    put:
-      tags:
-        - Route
-      operationId: "db.route_helper.update"
-      summary: "Update a Route"
-      parameters:
-        - $ref: "#/components/parameters/id"
-      responses:
-        "200":
-          description: "Successfully updated Routes"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              x-body-name: "route"
-              $ref: "#/components/schemas/Route"
+        '200':
+          description: OK
+        '404':
+          description: User not found
     delete:
-      tags:
-        - Route
-      operationId: "db.route_helper.delete"
-      summary: "Delete a Route"
+      summary: Delete a specific user
+      operationId: deleteUser
       parameters:
-        - $ref: "#/components/parameters/id"
+        - name: user_id
+          in: path
+          description: ID of the user to delete
+          required: true
+          schema:
+            type: integer
       responses:
-        "204":
-          description: "Successfully deleted Route"
+        '200':
+          description: OK
+        '404':
+          description: User not found
 
-# ----------------------------------------
+# ---------------- CARS -------------------
 
-#END POINTS CAR
-
-# paths:
-  /car:
+  /cars:
     get:
-      operationId: "db.car_helper.read_all"
-      tags:
-        - Car
-      summary: "Read the list of people"
+      summary: Retrieve all cars
+      operationId: getCars
       responses:
-        "200":
-          description: "Successfully read people list"
-          #Create a New Person
+        '200':
+          description: OK
     post:
-      operationId: "db.car_helper.create"
-      tags:
-        - Car
-      summary: "Create a CAR"
+      summary: Create a new car
+      operationId: createCar
       requestBody:
-        description: "Person to create"
         required: true
         content:
           application/json:
             schema:
-              x-body-name: "car"
-              $ref: "#/components/schemas/Car"
+              $ref: '#/components/schemas/Car'
       responses:
-        "201":
-          description: "Successfully created person"
-  /car/{id}:
+        '201':
+          description: Created
+  /cars/{car_id}:
     get:
-     operationId: "db.car_helper.read_one"
-     tags:
-       - Car
-     summary: "Read one CAR"
-     parameters:
-       - $ref: "#/components/parameters/id"
-     responses:
-       "200":
-         description: "Successfully read CAR"
-    put:
-      tags:
-        - Car
-      operationId: "db.car_helper.update"
-      summary: "Update a person"
+      summary: Retrieve a specific car
+      operationId: getCar
       parameters:
-        - $ref: "#/components/parameters/id"
+        - name: car_id
+          in: path
+          description: ID of the car to retrieve
+          required: true
+          schema:
+            type: integer
       responses:
-        "200":
-          description: "Successfully updated person"
+        '200':
+          description: OK
+        '404':
+          description: Car not found
+    put:
+      summary: Update a specific car
+      operationId: updateCar
+      parameters:
+        - name: car_id
+          in: path
+          description: ID of the car to update
+          required: true
+          schema:
+            type: integer
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              x-body-name: "car"
-              $ref: "#/components/schemas/Car"
-    delete:
-      tags:
-        - Car
-      operationId: "db.car_helper.delete"
-      summary: "Delete a person"
-      parameters:
-        - $ref: "#/components/parameters/id"
+              $ref: '#/components/schemas/Car'
       responses:
-        "204":
-          description: "Successfully deleted person"
+        '200':
+          description: OK
+        '404':
+          description: Car not found
+    delete:
+      summary: Delete a specific car
+      operationId: deleteCar
+      parameters:
+        - name: car_id
+          in: path
+          description: ID of the car to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Car not found
+
+# ------------------ RAYDS ---------------------
+
+  /rides:
+    get:
+      summary: Retrieve all rides
+      operationId: getRides
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create a new ride
+      operationId: createRide
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ride'
+      responses:
+        '201':
+          description: Created
+  /rides/{ride_id}:
+    get:
+      summary: Retrieve a specific ride
+      operationId: getRide
+      parameters:
+        - name: ride_id
+          in: path
+          description: ID of the ride to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Ride not found
+    put:
+      summary: Update a specific ride
+      operationId: updateRide
+      parameters:
+        - name: ride_id
+          in: path
+          description: ID of the ride to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ride'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Ride not found
+    delete:
+      summary: Delete a specific ride
+      operationId: deleteRide
+      parameters:
+        - name: ride_id
+          in: path
+          description: ID of the ride to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Ride not found
+
+# ------------------ RAYD PASSENGERS ----------------------
+
+  /rides/{ride_id}/passengers:
+    get:
+      summary: Retrieve passengers for a ride
+      operationId: getPassengers
+      parameters:
+        - name: ride_id
+          in: path
+          description: ID of the ride to retrieve passengers for
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Add a passenger to a ride
+      operationId: addPassenger
+      parameters:
+        - name: ride_id
+          in: path
+          description: ID of the ride to add a passenger to
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Passenger'
+      responses:
+        '201':
+          description: Created
+  /rides/{ride_id}/passengers/{passenger_id}:
+    delete:
+      summary: Remove a passenger from a ride
+      operationId: removePassenger
+      parameters:
+        - name: ride_id
+          in: path
+          description: ID of the ride to remove a passenger from
+          required: true
+          schema:
+            type: integer
+        - name: passenger_id
+          in: path
+          description: ID of the passenger to remove
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Passenger or ride not found
 
 
+# ------------------ STATUS ----------------------
+
+
+  /statuses:
+    get:
+      summary: Retrieve all statuses
+      operationId: getStatuses
+      responses:
+        '200':
+          description: OK
+  /statuses/{status_id}:
+    get:
+      summary: Retrieve a specific status
+      operationId: getStatus
+      parameters:
+        - name: status_id
+          in: path
+          description: ID of the status to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Status not found
+
+# ------------------ ROUTE ----------------------
+
+  /routes:
+    get:
+      summary: Retrieve all routes
+      operationId: getRoutes
+      responses:
+        '200':
+          description: OK
+  /routes/{route_id}:
+    get:
+      summary: Retrieve a specific route
+      operationId: getRoute
+      parameters:
+        - name: route_id
+          in: path
+          description: ID of the route to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Route not found
