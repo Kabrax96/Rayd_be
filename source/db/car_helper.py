@@ -1,5 +1,5 @@
 # FILL
-from models import Car, car_schema, car_schema_many
+from models import Car, car_schema
 from config import db
 from flask import make_response, abort
 import sys
