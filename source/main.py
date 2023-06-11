@@ -11,17 +11,16 @@ app.add_api(config.basedir / "swagger.yml")
 # Definiendo una funcion (home)
 # Renderisa una variable a render_tamplate de Home.htlm
 def home():
-    # people = User.query.all()
-    # return render_template("home.html/", people=people)
-    print('yay')
+    people = User.query.all()
+    return render_template("home.html/", people=people)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
-# # User routes
-# @app.route('/users', methods=['GET'])
-# def get_all_users():
-#     users = User.query.all()
-#     return jsonify(user_schema.dump(users))
+    app.run(host="0.0.0.0", port=8080, debug=True)
+# User routes
+@app.route('/users', methods=['GET'])
+def get_all_users():
+    users = User.query.all()
+    return jsonify(user_schema.dump(users))
 
 # @app.route('/users', methods=['POST'])
 # def create_user():
