@@ -304,7 +304,7 @@ paths:
   /rides/{ride_id}/passengers:
     get:
       summary: Retrieve passengers for a ride
-      operationId: getPassengers
+      operationId: "passengers_helper.read_one"
       parameters:
         - name: ride_id
           in: path
@@ -317,7 +317,7 @@ paths:
           description: OK
     post:
       summary: Add a passenger to a ride
-      operationId: addPassenger
+      operationId: "passengers_helper.create_passenger"
       parameters:
         - name: ride_id
           in: path
@@ -337,7 +337,7 @@ paths:
   /rides/{ride_id}/passengers/{passenger_id}:
     delete:
       summary: Remove a passenger from a ride
-      operationId: removePassenger
+      operationId: r
       parameters:
         - name: ride_id
           in: path

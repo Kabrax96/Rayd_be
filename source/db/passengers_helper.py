@@ -5,13 +5,28 @@ import sys
 sys.path.append('../')
 
 # Passenger helper functions
+
+
 def read_all_passengers():
     passengers = Passengers.query.all()
     return passenger_schema.dump(passengers)
 
+
+def read_one(id):
+    car = Passengers.query.filter(Passengers.id == id).first()
+
+    if car is not None:
+        return passenger_schema.dump(car)
+    else:
+        abort(
+            404, f"id {id} not found"
+        )
+
+
 def create_passenger(passenger):
     id = passenger.get("id")
-    existing_passenger = Passengers.query.filter(Passengers.id == id).one_or_none()
+    existing_passenger = Passengers.query.filter(
+        Passengers.id == id).one_or_none()
 
     if existing_passenger is None:
         new_passenger = passenger_schema.load(passenger, session=db.session)
@@ -24,8 +39,10 @@ def create_passenger(passenger):
             f"Passenger with id {id} already exists",
         )
 
+
 def update_passenger(id, passenger):
-    update_passenger = Passengers.query.filter(Passengers.id == id).one_or_none()
+    update_passenger = Passengers.query.filter(
+        Passengers.id == id).one_or_none()
 
     if update_passenger is not None:
         schema = passenger_schema.load(passenger, session=db.session)
@@ -44,6 +61,7 @@ def update_passenger(id, passenger):
             404,
             f"Passenger not found for Id: {id}",
         )
+
 
 def delete_passenger(id):
     passenger = Passengers.query.filter(Passengers.id == id).one_or_none()
