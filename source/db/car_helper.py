@@ -6,27 +6,11 @@ import sys
 sys.path.append('../')
 
 
-def read_all():
-    car = Car.query.all()
-    return car_schema_many.dump(car)
 
-
-def create(car):
-    id = car.get("id")
-    print('a ver id:', id)
-    existing_car = Car.query.filter(Car.id == id).one_or_none()
-
-    if existing_car is None:
-        new_car = car_schema.load(car, session=db.session)
-        db.session.add(new_car)
-        db.session.commit()
-        return car_schema.dump(new_car), 201
-    else:
-        abort(
-            406,
-            f"id {id} already exists",
-        )
-
+# Car helper functions
+def read_all_cars():
+    cars = Car.query.all()
+    return car_schema.dump(cars)
 
 def read_one(id):
     car = Car.query.filter(Car.id == id).first()
@@ -38,33 +22,54 @@ def read_one(id):
             404, f"id {id} not found"
         )
 
-
-def update(id, car):
+def create_car(car):
+    id = car.get("id")
     existing_car = Car.query.filter(Car.id == id).one_or_none()
-    if existing_car:
-        update_car = car_schema.load(car, session=db.session)
-        existing_car.id = update_car.id  # se agregan otras tablas?
+
+    if existing_car is None:
+        new_car = car_schema.load(car, session=db.session)
+        db.session.add(new_car)
         db.session.commit()
-        return car_schema.dump(existing_car), 201
+        return car_schema.dump(new_car), 201
+    else:
+        abort(
+            406,
+            f"Car with id {id} already exists",
+        )
+
+def update_car(id, car):
+    update_car = Car.query.filter(Car.id == id).one_or_none()
+
+    if update_car is not None:
+        schema = car_schema.load(car, session=db.session)
+        for key, value in schema.items():
+            setattr(update_car, key, value)
+
+        db.session.add(update_car)
+        db.session.commit()
+
+        data = car_schema.dump(update_car)
+
+        return data, 200
+
     else:
         abort(
             404,
-            f"id {id} not found"
+            f"Car not found for Id: {id}",
         )
 
+def delete_car(id):
+    car = Car.query.filter(Car.id == id).one_or_none()
 
-def delete(id):
-    existing_car = Car.query.filter(Car.id == id).one_or_none()
-
-    if existing_car:
-        db.session.delete(existing_car)
+    if car is not None:
+        db.session.delete(car)
         db.session.commit()
         return make_response(
-            f"{id} successfully deleted", 200
+            f"Car {id} deleted", 200
         )
-
     else:
         abort(
             404,
-            f"user with last name {id} not found"
+            f"Car not found for Id: {id}",
         )
+
