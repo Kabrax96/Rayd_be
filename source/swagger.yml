@@ -230,7 +230,7 @@ paths:
   /rides:
     get:
       summary: Retrieve all rides
-      operationId: "db.ride_helper.read_all_riders"
+      operationId: "db.ride_helper.read_all_rides"
       responses:
         "200":
           description: OK
@@ -339,7 +339,7 @@ paths:
   /rides/{ride_id}/passengers/{passenger_id}:
     delete:
       summary: Remove a passenger from a ride
-      operationId: "db.passenger_helper.delete_passenger"
+      operationId: "db.passengers_helper.delete_passenger"
       parameters:
         - name: ride_id
           in: path

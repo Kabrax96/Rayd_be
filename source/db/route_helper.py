@@ -1,5 +1,5 @@
 # Fill
-from models import Route, route_schema, route_schema_many
+from models import Route, route_schema
 from config import db
 from flask import make_response, abort
 import sys
