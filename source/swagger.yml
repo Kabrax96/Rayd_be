@@ -362,14 +362,14 @@ paths:
   /statuses:
     get:
       summary: Retrieve all statuses
-      operationId: getStatuses
+      operationId: "status_table.read_all_statuses"
       responses:
         "200":
           description: OK
   /statuses/{status_id}:
     get:
       summary: Retrieve a specific status
-      operationId: getStatus
+      operationId: "status_table.read_one"
       parameters:
         - name: status_id
           in: path

@@ -10,6 +10,18 @@ def read_all_statuses():
     statuses = Status.query.all()
     return status_schema.dump(statuses)
 
+
+def read_one(id):
+    car = Status.query.filter(Status.id == id).first()
+
+    if car is not None:
+        return status_schema.dump(car)
+    else:
+        abort(
+            404, f"id {id} not found"
+        )
+
+
 def create_status(status):
     id = status.get("id")
     existing_status = Status.query.filter(Status.id == id).one_or_none()
@@ -24,6 +36,7 @@ def create_status(status):
             406,
             f"Status with id {id} already exists",
         )
+
 
 def update_status(id, status):
     update_status = Status.query.filter(Status.id == id).one_or_none()
@@ -45,6 +58,7 @@ def update_status(id, status):
             404,
             f"Status not found for Id: {id}",
         )
+
 
 def delete_status(id):
     status = Status.query.filter(Status.id == id).one_or_none()
