@@ -4,6 +4,10 @@ openapi: 3.0.0
 info:
   title: RAYD API
   version: 0.1.0
+  description: The Ride Sharing API enables users to manage ride sharing activities, including user registration, car details, ride creation, and passenger management. It provides endpoints to interact with users, cars, rides, and statuses. With this API, users can easily create, update, and delete user profiles, cars, and rides, as well as track ride statuses and manage passengers.
+
+servers:
+  - url: "/api"
 
 # Table Schemas
 
@@ -79,7 +83,7 @@ paths:
   /users:
     get:
       summary: Retrieve all users
-      operationId: getUsers
+      operationId: "db.users_helper.read_all_users"
       responses:
         '200':
           description: OK
