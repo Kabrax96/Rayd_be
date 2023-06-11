@@ -6,11 +6,11 @@ import sys
 sys.path.append('../')
 
 
-
 # Car helper functions
 def read_all_cars():
     cars = Car.query.all()
     return car_schema.dump(cars)
+
 
 def read_one(id):
     car = Car.query.filter(Car.id == id).first()
@@ -21,6 +21,7 @@ def read_one(id):
         abort(
             404, f"id {id} not found"
         )
+
 
 def create_car(car):
     id = car.get("id")
@@ -36,6 +37,7 @@ def create_car(car):
             406,
             f"Car with id {id} already exists",
         )
+
 
 def update_car(id, car):
     update_car = Car.query.filter(Car.id == id).one_or_none()
@@ -58,6 +60,7 @@ def update_car(id, car):
             f"Car not found for Id: {id}",
         )
 
+
 def delete_car(id):
     car = Car.query.filter(Car.id == id).one_or_none()
 
@@ -72,4 +75,3 @@ def delete_car(id):
             404,
             f"Car not found for Id: {id}",
         )
-

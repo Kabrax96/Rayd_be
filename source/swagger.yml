@@ -77,32 +77,31 @@ components:
 # Endpoints
 
 paths:
-
-# ------------------ USERS ----------------------
+  # ------------------ USERS ----------------------
 
   /users:
     get:
       summary: Retrieve all users
       operationId: "db.users_helper.read_all_users"
       responses:
-        '200':
+        "200":
           description: OK
     post:
       summary: Create a new user
-      operationId: createUser
+      operationId: "db.users_helper.create_user"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
       responses:
-        '201':
+        "201":
           description: Created
   /users/{user_id}:
     get:
       summary: Retrieve a specific user
-      operationId: getUser
+      operationId: "db.users_helper.read_one"
       parameters:
         - name: user_id
           in: path
@@ -111,13 +110,13 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: User not found
     put:
       summary: Update a specific user
-      operationId: updateUser
+      operationId: "db.users_helper.update_user"
       parameters:
         - name: user_id
           in: path
@@ -130,15 +129,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: User not found
     delete:
       summary: Delete a specific user
-      operationId: deleteUser
+      operationId: "db.users_helper.delete_user"
       parameters:
         - name: user_id
           in: path
@@ -147,36 +146,36 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: User not found
 
-# ---------------- CARS -------------------
+  # ---------------- CARS -------------------
 
   /cars:
     get:
       summary: Retrieve all cars
-      operationId: getCars
+      operationId: "car_helper.read_all_cars"
       responses:
-        '200':
+        "200":
           description: OK
     post:
       summary: Create a new car
-      operationId: createCar
+      operationId: "car_helper.create_car"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Car'
+              $ref: "#/components/schemas/Car"
       responses:
-        '201':
+        "201":
           description: Created
   /cars/{car_id}:
     get:
       summary: Retrieve a specific car
-      operationId: getCar
+      operationId: "car_helper.read_one"
       parameters:
         - name: car_id
           in: path
@@ -185,13 +184,13 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Car not found
     put:
       summary: Update a specific car
-      operationId: updateCar
+      operationId: "car_helper.update_car"
       parameters:
         - name: car_id
           in: path
@@ -204,15 +203,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Car'
+              $ref: "#/components/schemas/Car"
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Car not found
     delete:
       summary: Delete a specific car
-      operationId: deleteCar
+      operationId: "car_helper.delete_car"
       parameters:
         - name: car_id
           in: path
@@ -221,19 +220,19 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Car not found
 
-# ------------------ RAYDS ---------------------
+  # ------------------ RAYDS ---------------------
 
   /rides:
     get:
       summary: Retrieve all rides
       operationId: getRides
       responses:
-        '200':
+        "200":
           description: OK
     post:
       summary: Create a new ride
@@ -243,9 +242,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Ride'
+              $ref: "#/components/schemas/Ride"
       responses:
-        '201':
+        "201":
           description: Created
   /rides/{ride_id}:
     get:
@@ -259,9 +258,9 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Ride not found
     put:
       summary: Update a specific ride
@@ -278,11 +277,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Ride'
+              $ref: "#/components/schemas/Ride"
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Ride not found
     delete:
       summary: Delete a specific ride
@@ -295,12 +294,12 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Ride not found
 
-# ------------------ RAYD PASSENGERS ----------------------
+  # ------------------ RAYD PASSENGERS ----------------------
 
   /rides/{ride_id}/passengers:
     get:
@@ -314,7 +313,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
     post:
       summary: Add a passenger to a ride
@@ -331,9 +330,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Passenger'
+              $ref: "#/components/schemas/Passenger"
       responses:
-        '201':
+        "201":
           description: Created
   /rides/{ride_id}/passengers/{passenger_id}:
     delete:
@@ -353,21 +352,19 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Passenger or ride not found
 
-
-# ------------------ STATUS ----------------------
-
+  # ------------------ STATUS ----------------------
 
   /statuses:
     get:
       summary: Retrieve all statuses
       operationId: getStatuses
       responses:
-        '200':
+        "200":
           description: OK
   /statuses/{status_id}:
     get:
@@ -381,19 +378,19 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Status not found
 
-# ------------------ ROUTE ----------------------
+  # ------------------ ROUTE ----------------------
 
   /routes:
     get:
       summary: Retrieve all routes
       operationId: getRoutes
       responses:
-        '200':
+        "200":
           description: OK
   /routes/{route_id}:
     get:
@@ -407,7 +404,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: OK
-        '404':
+        "404":
           description: Route not found
