@@ -5,28 +5,10 @@ from flask import make_response, abort
 import sys
 sys.path.append('../')
 
-
-def read_all():
-    route = Route.query.all()
-    return route_schema_many.dump(route)
-
-
-def create(route):
-    id = route.get("id")
-    print('a ver id route:', id)
-    existing_route = Route.query.filter(Route.id == id).one_or_none()
-
-    if existing_route is None:
-        new_route = route_schema.load(route, session=db.session)
-        db.session.add(new_route)
-        db.session.commit()
-        return route_schema.dump(new_route), 201
-    else:
-        abort(
-            406,
-            f"id {id} already exists",
-        )
-
+# Route helper functions
+def read_all_routes():
+    routes = Route.query.all()
+    return route_schema.dump(routes)
 
 def read_one(id):
     route = Route.query.filter(Route.id == id).first()
@@ -39,32 +21,55 @@ def read_one(id):
         )
 
 
-def update(id, route):
+def create_route(route):
+    id = route.get("id")
     existing_route = Route.query.filter(Route.id == id).one_or_none()
-    if existing_route:
-        update_route = route_schema.load(route, session=db.session)
-        existing_route.id = update_route.id  # se agregan otras tablas?
+
+    if existing_route is None:
+        new_route = route_schema.load(route, session=db.session)
+        db.session.add(new_route)
         db.session.commit()
-        return route_schema.dump(existing_route), 201
+        return route_schema.dump(new_route), 201
+    else:
+        abort(
+            406,
+            f"Route with id {id} already exists",
+        )
+
+def update_route(id, route):
+    update_route = Route.query.filter(Route.id == id).one_or_none()
+
+    if update_route is not None:
+        schema = route_schema.load(route, session=db.session)
+        for key, value in schema.items():
+            setattr(update_route, key, value)
+
+        db.session.add(update_route)
+        db.session.commit()
+
+        data = route_schema.dump(update_route)
+
+        return data, 200
+
     else:
         abort(
             404,
-            f"id {id} not found"
+            f"Route not found for Id: {id}",
         )
 
+def delete_route(id):
+    route = Route.query.filter(Route.id == id).one_or_none()
 
-def delete(id):
-    existing_route = Route.query.filter(Route.id == id).one_or_none()
-
-    if existing_route:
-        db.session.delete(existing_route)
+    if route is not None:
+        db.session.delete(route)
         db.session.commit()
         return make_response(
-            f"{id} successfully deleted", 200
+            f"Route {id} deleted", 200
         )
-
     else:
         abort(
             404,
-            f"user with last name {id} not found"
+            f"Route not found for Id: {id}",
         )
+
+
