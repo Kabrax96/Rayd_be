@@ -1,32 +1,81 @@
+
+
 import sqlite3
-conn = sqlite3.connect("backend.db")
-# columns = [
-#     "id INTEGER PRIMARY KEY",
-#     "lname VARCHAR UNIQUE",
-#     "fname VARCHAR",
-#     "timestamp DATETIME",
-# ]
-# create_table_cmd = f"CREATE TABLE person ({','.join(columns)})"
-# conn.execute(create_table_cmd)
 
-# print('create_db.py')
+def create_database():
+    conn = sqlite3.connect('rayd.db')
+    cursor = conn.cursor()
 
-# people = [
-#     "1, 'Fairy', 'Tooth', '2022-10-08 09:15:10'",
-#     "2, 'Ruprecht', 'Knecht', '2022-10-08 09:15:13'",
-#     "3, 'Bunny', 'Easter', '2022-10-08 09:15:27'",
-# ]
+    # Create User table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS User (
+            id INTEGER PRIMARY KEY,
+            is_driver BOOLEAN,
+            id_car INTEGER,
+            email VARCHAR(100),
+            password VARCHAR(100),
+            phone VARCHAR(20)
+        )
+    ''')
 
-# for person_data in people:
-#     insert_cmd = f"INSERT INTO person VALUES ({person_data})"
-#     conn.execute(insert_cmd)
+    # Create Ride table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Ride (
+            id INTEGER PRIMARY KEY,
+            driver_id INTEGER,
+            start_time DATETIME,
+            end_time DATETIME,
+            pickup VARCHAR(100),
+            drop_off VARCHAR(100),
+            seats INTEGER,
+            status_id INTEGER,
+            route_id INTEGER,
+            FOREIGN KEY (driver_id) REFERENCES User (id),
+            FOREIGN KEY (status_id) REFERENCES Status (id),
+            FOREIGN KEY (route_id) REFERENCES Route (id)
+        )
+    ''')
 
-# conn.commit()
+    # Create Car table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Car (
+            id INTEGER PRIMARY KEY,
+            brand VARCHAR(50),
+            model VARCHAR(50),
+            year INTEGER,
+            plate VARCHAR(20)
+        )
+    ''')
 
+    # Create Status table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Status (
+            id INTEGER PRIMARY KEY,
+            status VARCHAR(50)
+        )
+    ''')
 
-# cur = conn.cursor()
-# cur.execute("SELECT * FROM person")
+    # Create Route table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Route (
+            id INTEGER PRIMARY KEY,
+            name VARCHAR(100)
+        )
+    ''')
 
-# people = cur.fetchall()
-# for person in people:
-#     print(person)
+    # Create Passenger table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Passenger (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER,
+            ride_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES User (id),
+            FOREIGN KEY (ride_id) REFERENCES Ride (id)
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+if __name__ == '__main__':
+    create_database()
