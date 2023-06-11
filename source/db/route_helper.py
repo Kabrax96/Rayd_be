@@ -6,9 +6,12 @@ import sys
 sys.path.append('../')
 
 # Route helper functions
+
+
 def read_all_routes():
     routes = Route.query.all()
     return route_schema.dump(routes)
+
 
 def read_one(id):
     route = Route.query.filter(Route.id == id).first()
@@ -36,6 +39,7 @@ def create_route(route):
             f"Route with id {id} already exists",
         )
 
+
 def update_route(id, route):
     update_route = Route.query.filter(Route.id == id).one_or_none()
 
@@ -57,6 +61,7 @@ def update_route(id, route):
             f"Route not found for Id: {id}",
         )
 
+
 def delete_route(id):
     route = Route.query.filter(Route.id == id).one_or_none()
 
@@ -71,5 +76,3 @@ def delete_route(id):
             404,
             f"Route not found for Id: {id}",
         )
-
-

@@ -156,13 +156,13 @@ paths:
   /cars:
     get:
       summary: Retrieve all cars
-      operationId: "car_helper.read_all_cars"
+      operationId: "db.car_helper.read_all_cars"
       responses:
         "200":
           description: OK
     post:
       summary: Create a new car
-      operationId: "car_helper.create_car"
+      operationId: "db.car_helper.create_car"
       requestBody:
         required: true
         content:
@@ -175,7 +175,7 @@ paths:
   /cars/{car_id}:
     get:
       summary: Retrieve a specific car
-      operationId: "car_helper.read_one"
+      operationId: "db.car_helper.read_one"
       parameters:
         - name: car_id
           in: path
@@ -190,7 +190,7 @@ paths:
           description: Car not found
     put:
       summary: Update a specific car
-      operationId: "car_helper.update_car"
+      operationId: "db.car_helper.update_car"
       parameters:
         - name: car_id
           in: path
@@ -211,7 +211,7 @@ paths:
           description: Car not found
     delete:
       summary: Delete a specific car
-      operationId: "car_helper.delete_car"
+      operationId: "db.car_helper.delete_car"
       parameters:
         - name: car_id
           in: path
@@ -230,13 +230,13 @@ paths:
   /rides:
     get:
       summary: Retrieve all rides
-      operationId: "ride_helper.read_all_riders"
+      operationId: "db.ride_helper.read_all_riders"
       responses:
         "200":
           description: OK
     post:
       summary: Create a new ride
-      operationId: "ride_helpers.create_ride"
+      operationId: "db.ride_helper.create_ride"
       requestBody:
         required: true
         content:
@@ -249,7 +249,7 @@ paths:
   /rides/{ride_id}:
     get:
       summary: Retrieve a specific ride
-      operationId: "ride_helper.read_one"
+      operationId: "db.ride_helper.read_one"
       parameters:
         - name: ride_id
           in: path
@@ -264,7 +264,7 @@ paths:
           description: Ride not found
     put:
       summary: Update a specific ride
-      operationId: "ride_helpes.update_ride"
+      operationId: "db.ride_helper.update_ride"
       parameters:
         - name: ride_id
           in: path
@@ -285,7 +285,7 @@ paths:
           description: Ride not found
     delete:
       summary: Delete a specific ride
-      operationId: "ride_helper.delete_ride"
+      operationId: "db.ride_helper.delete_ride"
       parameters:
         - name: ride_id
           in: path
@@ -301,10 +301,11 @@ paths:
 
   # ------------------ RAYD PASSENGERS ----------------------
 
+  #TODO: RIDES??? O PASSENGERS ??
   /rides/{ride_id}/passengers:
     get:
       summary: Retrieve passengers for a ride
-      operationId: "passengers_helper.read_one"
+      operationId: "db.passengers_helper.read_one"
       parameters:
         - name: ride_id
           in: path
@@ -315,9 +316,10 @@ paths:
       responses:
         "200":
           description: OK
+          # TODO: FALTA AGREGAR UPDATE
     post:
       summary: Add a passenger to a ride
-      operationId: "passengers_helper.create_passenger"
+      operationId: "db.passengers_helper.create_passenger"
       parameters:
         - name: ride_id
           in: path
@@ -337,7 +339,7 @@ paths:
   /rides/{ride_id}/passengers/{passenger_id}:
     delete:
       summary: Remove a passenger from a ride
-      operationId: r
+      operationId: "db.passenger_helper.delete_passenger"
       parameters:
         - name: ride_id
           in: path
@@ -362,14 +364,14 @@ paths:
   /statuses:
     get:
       summary: Retrieve all statuses
-      operationId: "status_table.read_all_statuses"
+      operationId: "db.status_table.read_all_statuses"
       responses:
         "200":
           description: OK
   /statuses/{status_id}:
     get:
       summary: Retrieve a specific status
-      operationId: "status_table.read_one"
+      operationId: "db.status_table.read_one"
       parameters:
         - name: status_id
           in: path
@@ -388,14 +390,15 @@ paths:
   /routes:
     get:
       summary: Retrieve all routes
-      operationId: getRoutes
+      operationId: "db.route_helper.read_all_routes"
       responses:
         "200":
           description: OK
+          #TODO: FALTA DE AGREGAR CREATE
   /routes/{route_id}:
     get:
       summary: Retrieve a specific route
-      operationId: getRoute
+      operationId: "db.route_helper.read_one"
       parameters:
         - name: route_id
           in: path
@@ -408,3 +411,4 @@ paths:
           description: OK
         "404":
           description: Route not found
+          #TODO: FALTA AGREGAR DELETE
